@@ -10,7 +10,7 @@ $cipheredPassword = encrypt -CertificateThumbprint $encryptionCert.Thumbprint -T
 
 # Store the cipheredPassword in the script which is run on the local machine:
 $encryptedPassword = '...'
-$decryptedPassword = encrypt -CertificateThumbprint 'encryptionCertThumbprint' -Text $encryptedPassword
+$decryptedPassword = decrypt -CertificateThumbprint 'encryptionCertThumbprint' -CipherText $encryptedPassword
 
 
 function createCertificate ([string]$CommonName) {
