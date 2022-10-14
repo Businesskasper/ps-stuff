@@ -13,7 +13,6 @@ function HashtableAsObject() {
     if ($item -is [Hashtable] -or $item -is [System.Collections.Generic.Dictionary[string, object]]) {
         $copy = [PSCustomObject]::new()
         $item.GetEnumerator() | % {
-            $enumerable = $_
             $copy | Add-Member -MemberType NoteProperty -Name $_.Key -Value (ConvertToPsObject -item $_.Value)
         }
         return $copy
@@ -21,7 +20,6 @@ function HashtableAsObject() {
     elseif ($item -is [PSCustomObject]) {
         $copy = [PSCustomObject]::new()
         $item | Get-Member -MemberType NoteProperty | % {
-            $member = $_
             $copy | Add-Member -MemberType NoteProperty -Name $_.Name -Value (ConvertToPsObject -item $item.($_.Name))
         }
         return $copy
