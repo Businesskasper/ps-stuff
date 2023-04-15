@@ -19,7 +19,7 @@ function Log([string]$text) {
 function valueChangedHandler ([object]$sender, [System.Management.EventArrivedEventArgs]$e) {
 
     if ($null -ne $sender) {
-        Log -text "Wert wurde geändert"
+        Log -text "Value was changed"
     }
 
     $currentValue = Get-ItemPropertyValue -Path ("HKLM:\" + $PATH.Replace("\\", "\")) -Name $KEY 
