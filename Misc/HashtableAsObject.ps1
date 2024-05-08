@@ -18,36 +18,34 @@ function HashtableAsObject() {
         $copy = [PSCustomObject]::new()
         $members = $item.GetEnumerator()
         foreach ($member in $members) {
-            $asObj = toObject -item $member.Value
+            $asObj = HashtableAsObject -item $member.Value
             $copy | Add-Member -MemberType NoteProperty -Name $member.Key -Value $asObj
         }
         return $copy
     }
-    <#
     # Temporary workaround since for some reason a String was recognized as PSCustomObject in the next clause
     elseif ($item.GetType().Name -eq "String" -or $item.GetType().Name -like "Int*" -or $item.GetType().Name -eq "Boolean") {
         # item is a primitive value
         # return as is
         return $item
     }
-    #>
+    elseif ([System.Collections.Generic.IEnumerable[object]].IsAssignableFrom($item.GetType())) {
+        # item is a collection
+        # create new array and recursviely add members
+        $copy = [PSCustomObject[]]@()
+        foreach ($member in $item) {
+            $copy += HashtableAsObject -item $member
+        }
+        return $copy
+    }
     elseif ($item -is [PSCustomObject]) {
         # item is an object
         # copy object and recursively add members
         $copy = [PSCustomObject]::new()
         $members = $item | Get-Member -MemberType NoteProperty
         foreach ($member in $members) {
-            $asObj = toObject -item $item.($member.Name)
+            $asObj = HashtableAsObject -item $item.($member.Name)
             $copy | Add-Member -MemberType NoteProperty -Name $member.Name -Value $asObj
-        }
-        return $copy
-    }
-    elseif ([System.Collections.Generic.IEnumerable[object]].IsAssignableFrom($item.GetType())) {
-        # item is a collection
-        # create new array and recursviely add members
-        $copy = [PSCustomObject[]]@()
-        foreach ($member in $item) {
-            $copy += toObject -item $member
         }
         return $copy
     }
@@ -57,21 +55,3 @@ function HashtableAsObject() {
         return $item
     }
 }
-
-<#
-function HashtableAsObject {
-
-    [cmdletbinding()]
-    param(
-        [parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        $hashtable
-    )
-    $obj = [PSCustomObject]::new()
-    $hashtable.GetEnumerator() | % {
-
-        $obj | Add-Member -MemberType NoteProperty -Name $_.Key -Value $_.Value
-    }
-
-    return $obj
-}
-#>
