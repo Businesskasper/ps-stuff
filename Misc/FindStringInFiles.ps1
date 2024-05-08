@@ -1,9 +1,9 @@
 ﻿# Finds files with specific content
-# Example: FindStringInFiles -regex "*match*" -fileType = "*.ps1"
+# Example: FindStringInFiles -regex "*match*" -fileType = "*.ps1" -dir c:\folder\
 
-function FindStringInFiles([string]$regex, [string]$fileType = '*.*') {
+function FindStringInFiles([string]$dir, [string]$regex, [string]$fileType = '*.*') {
 
-    $files = Get-ChildItem -Path "c:\folder\" -Recurse -Filter *.* | select -ExpandProperty FullName
+    $files = Get-ChildItem -Path $dir -Recurse -Filter *.* | select -ExpandProperty FullName
     
     foreach ($file in $files) {
 

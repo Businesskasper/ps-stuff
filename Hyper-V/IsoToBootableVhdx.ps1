@@ -40,7 +40,6 @@ function IsoToBootableVhdx {
 
     $osPartition = $vhdx | New-Partition -UseMaximumSize -GptType '{ebd0a0a2-b9e5-4433-87c0-68b6b72699c7}'
     $osVolume = $osPartition | Format-Volume -FileSystem NTFS -Force
-
     $osPartition = $osPartition | Add-PartitionAccessPath -AssignDriveLetter -PassThru | Get-Partition
     $windowsDrive = $(Get-Partition -Volume $osVolume).AccessPaths[0].substring(0, 2)
 
